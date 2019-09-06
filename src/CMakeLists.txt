@@ -1,23 +1,4 @@
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-## until making f5c a C project use g++
-#set_source_files_properties(align.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(bseq.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(chain.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(esterr.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(format.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(hit.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(index.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(kalloc.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(kthread.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(main.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(map.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(misc.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(options.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(pe.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(sdust.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(sketch.c PROPERTIES LANGUAGE CXX)
-#set_source_files_properties(merge.c PROPERTIES LANGUAGE CXX)
+include_directories(${PROJECT_SOURCE_DIR}/src)
 
 set (ALIGN align.c minimap.h mmpriv.h bseq.h ksw2.h kalloc.h)
 set (BSEQ bseq.c bseq.h kvec.h kalloc.h kseq.h)
@@ -67,12 +48,10 @@ ELSE()
 ENDIF()
 
 
-
-
 # link with dependencies
 IF (${DEPLOY_PLATFORM} STREQUAL "x86")
-	target_link_libraries(minimapshared -lz -lpthread -ldl)
+	target_link_libraries(minimapshared -lz -lpthread -ldl -lm)
 ELSE()
 	find_library(ANDROID_LOG_LIB log)
-	target_link_libraries(minimapshared ${ANDROID_LOG_LIB} ${KSW2_EXTD2_SSE} ${KSW2_EXTS2_SSE} ${KSW2_EXTZ2_SSE} ${KSW2_LL_SSE} -lz -ldl)
+	target_link_libraries(minimapshared ${ANDROID_LOG_LIB} ${KSW2_EXTD2_SSE} ${KSW2_EXTS2_SSE} ${KSW2_EXTZ2_SSE} ${KSW2_LL_SSE} -lz -ldl -lm)
 ENDIF()

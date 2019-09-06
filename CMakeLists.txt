@@ -12,19 +12,17 @@ IF (${DEPLOY_PLATFORM} STREQUAL "unknown")
 	return() # This is to stop proceeding further and to stop opencv getting set to the default ANDROID_ABI
 ENDIF()
 
-
 # Set minimum cmake version + cmake settings
 cmake_minimum_required (VERSION 3.9)
-cmake_policy(SET CMP0048 OLD)
 
 # Specify the project, and set the use of c++ and c
-project(MINIMAP2 LANGUAGES CXX C)
+project(MINIMAP2)
 	
 message(STATUS "Configure minimap2")
 
 # Set project name
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wall -O2 -Wc++-compat")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -rdynamic -fPIC -Wall -O2 -Wc++-compat")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic -g -Wall -O2")
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/src)
-add_subdirectory(${CMAKE_SOURCE_DIR}/example)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/example)

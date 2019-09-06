@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "biscuit.hpp"
+#include "interface.h"
 int main()
 {
 	printf("running example!");
@@ -22,7 +22,7 @@ int main()
 	  }
 	argv[argc] = 0;
 
-    abc(argc,argv);
+    int result = init_minimap2(argc,argv);
 
 	return 0;
 }
