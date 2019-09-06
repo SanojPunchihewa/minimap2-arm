@@ -6,7 +6,7 @@
 #include "mmpriv.h"
 #include "merge.h"
 #include "logger.h"
-#include "biscuit.hpp"
+#include "interface.h"
 #ifdef HAVE_GETOPT
 #include <getopt.h>
 #else
@@ -99,8 +99,7 @@ static inline void yes_or_no(mm_mapopt_t *opt, int flag, int long_idx, const cha
 	}
 }
 
-
-int abc(int argc, char *argv[])
+int init_minimap2(int argc, char *argv[])
 {
 	const char *opt_str = "2aSDw:k:K:t:r:f:Vv:g:G:I:d:XT:s:x:Hcp:M:n:z:A:B:O:E:m:N:Qu:R:hF:LC:yY";
 	mm_mapopt_t opt;
