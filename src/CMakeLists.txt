@@ -1,6 +1,5 @@
 include_directories(${PROJECT_SOURCE_DIR}/src)
 
-set (ALIGN align.c minimap.h mmpriv.h bseq.h ksw2.h kalloc.h)
 set (BSEQ bseq.c bseq.h kvec.h kalloc.h kseq.h)
 set (CHAIN chain.c minimap.h mmpriv.h bseq.h kalloc.h)
 set (ESTERR esterr.c mmpriv.h minimap.h bseq.h)
@@ -25,9 +24,10 @@ IF (${DEPLOY_PLATFORM} STREQUAL "arm64-v8a")
 	set (KSW2_EXTS2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_exts2_neon.o")
 	set (KSW2_EXTZ2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_extz2_neon.o")
 	set (KSW2_LL_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_ll_sse.o")
+	set (ALIGN "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/align.o")
 
 	# Build a shared lib
-	add_library(minimapshared SHARED ${ALIGN} ${BSEQ} ${CHAIN} ${ESTERR} ${FORMAT} ${HIT} ${INDEX} ${KALLOC}
+	add_library(minimapshared SHARED ${BSEQ} ${CHAIN} ${ESTERR} ${FORMAT} ${HIT} ${INDEX} ${KALLOC}
 			${KTHREAD} ${MAIN} ${MAP} ${MISC} ${OPTIONS} ${PE} ${SDUST} ${SKETCH} ${MERGE})
 
 ELSE()
@@ -36,6 +36,7 @@ ELSE()
 	set (KSW2_EXTS2_SSE ksw2_exts2_sse.c ksw2.h kalloc.h)
 	set (KSW2_EXTZ2_SSE ksw2_extz2_sse.c ksw2.h kalloc.h)
 	set (KSW2_LL_SSE ksw2_ll_sse.c ksw2.h kalloc.h)
+	set (ALIGN align.c minimap.h mmpriv.h bseq.h ksw2.h kalloc.h)
 
 	# Build a shared lib
 	add_library(minimapshared SHARED ${ALIGN} ${BSEQ} ${CHAIN} ${ESTERR} ${FORMAT} ${HIT} ${INDEX} ${KALLOC} ${KSW2_EXTD2_SSE} ${KSW2_EXTS2_SSE} ${KSW2_EXTZ2_SSE} ${KSW2_LL_SSE}
@@ -53,5 +54,5 @@ IF (${DEPLOY_PLATFORM} STREQUAL "x86")
 	target_link_libraries(minimapshared -lz -lpthread -ldl -lm)
 ELSE()
 	find_library(ANDROID_LOG_LIB log)
-	target_link_libraries(minimapshared ${ANDROID_LOG_LIB} ${KSW2_EXTD2_SSE} ${KSW2_EXTS2_SSE} ${KSW2_EXTZ2_SSE} ${KSW2_LL_SSE} -lz -ldl -lm)
+	target_link_libraries(minimapshared ${ANDROID_LOG_LIB} ${KSW2_EXTD2_SSE} ${KSW2_EXTS2_SSE} ${KSW2_EXTZ2_SSE} ${KSW2_LL_SSE} ${ALIGN} -lz -ldl -lm)
 ENDIF()

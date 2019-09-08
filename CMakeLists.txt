@@ -21,8 +21,8 @@ project(MINIMAP2)
 message(STATUS "Configure minimap2")
 
 # Set project name
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -rdynamic -fPIC -Wall -O2 -Wc++-compat")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -rdynamic -g -Wall -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -fPIC -Wall -O2 -Wc++-compat")  # -D_FILE_OFFSET_BITS=64 -fsigned-char
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -g -Wall -O2 -DHAVE_KALLOC")
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/example)
