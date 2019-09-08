@@ -14,6 +14,7 @@
 #include "mmpriv.h"
 #include "kvec.h"
 #include "khash.h"
+#include "logger.h"
 
 #define idx_hash(a) ((a)>>1)
 #define idx_eq(a, b) ((a)>>1 == (b)>>1)
@@ -85,7 +86,7 @@ void mm_idx_stat(const mm_idx_t *mi)
 	int n = 0, n1 = 0;
 	uint32_t i;
 	uint64_t sum = 0, len = 0;
-	fprintf(stderr, "[M::%s] kmer size: %d; skip: %d; is_hpc: %d; #seq: %d\n", __func__, mi->k, mi->w, mi->flag&MM_I_HPC, mi->n_seq);
+	INFO("[M::%s] kmer size: %d; skip: %d; is_hpc: %d; #seq: %d\n", __func__, mi->k, mi->w, mi->flag&MM_I_HPC, mi->n_seq);
 	for (i = 0; i < mi->n_seq; ++i)
 		len += mi->seq[i].len;
 	for (i = 0; i < 1U<<mi->b; ++i)
@@ -100,7 +101,7 @@ void mm_idx_stat(const mm_idx_t *mi)
 				if (kh_key(h, k)&1) ++n1;
 			}
 	}
-	fprintf(stderr, "[M::%s::%.3f*%.2f] distinct minimizers: %d (%.2f%% are singletons); average occurrences: %.3lf; average spacing: %.3lf\n",
+	INFO("[M::%s::%.3f*%.2f] distinct minimizers: %d (%.2f%% are singletons); average occurrences: %.3lf; average spacing: %.3lf\n",
 			__func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0), n, 100.0*n1/n, (double)sum / n, (double)len / sum);
 }
 
@@ -119,7 +120,7 @@ int mm_idx_index_name(mm_idx_t *mi)
 	}
 	mi->h = h;
 	if (has_dup && mm_verbose >= 2)
-		fprintf(stderr, "[WARNING] some database sequences have identical sequence names\n");
+		WARNING("%s", "some database sequences have identical sequence names\n");
 	return has_dup;
 }
 
@@ -320,7 +321,7 @@ static void *worker_pipeline(void *shared, int step, void *in)
 			if (t->l_seq > 0)
 				mm_sketch(0, t->seq, t->l_seq, p->mi->w, p->mi->k, t->rid, p->mi->flag&MM_I_HPC, &s->a);
 			else if (mm_verbose >= 2)
-				fprintf(stderr, "[WARNING] the length database sequence '%s' is 0\n", t->name);
+				WARNING("[WARNING] the length database sequence '%s' is 0\n", t->name);
 			free(t->seq); free(t->name);
 		}
 		free(s->seq); s->seq = 0;
@@ -345,11 +346,11 @@ mm_idx_t *mm_idx_gen(mm_bseq_file_t *fp, int w, int k, int b, int flag, int mini
 
 	kt_pipeline(n_threads < 3? n_threads : 3, worker_pipeline, &pl, 3);
 	if (mm_verbose >= 3)
-		fprintf(stderr, "[M::%s::%.3f*%.2f] collected minimizers\n", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0));
+		INFO("[M::%s::%.3f*%.2f] collected minimizers\n", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0));
 
 	mm_idx_post(pl.mi, n_threads);
 	if (mm_verbose >= 3)
-		fprintf(stderr, "[M::%s::%.3f*%.2f] sorted minimizers\n", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0));
+		INFO("[M::%s::%.3f*%.2f] sorted minimizers\n", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0));
 
 	return pl.mi;
 }
@@ -558,7 +559,7 @@ mm_idx_t *mm_idx_reader_read(mm_idx_reader_t *r, int n_threads)
 	if (r->is_idx) {
 		mi = mm_idx_load(r->fp.idx);
 		if (mi && mm_verbose >= 2 && (mi->k != r->opt.k || mi->w != r->opt.w || (mi->flag&MM_I_HPC) != (r->opt.flag&MM_I_HPC)))
-			fprintf(stderr, "[WARNING]\033[1;31m Indexing parameters (-k, -w or -H) overridden by parameters used in the prebuilt index.\033[0m\n");
+			WARNING("%s", "[WARNING]\033[1;31m Indexing parameters (-k, -w or -H) overridden by parameters used in the prebuilt index.\033[0m\n");
 	} else
 		mi = mm_idx_gen(r->fp.seq, r->opt.w, r->opt.k, r->opt.bucket_bits, r->opt.flag, r->opt.mini_batch_size, n_threads, r->opt.batch_size);
 	if (mi) {
