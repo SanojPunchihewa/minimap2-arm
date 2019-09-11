@@ -18,19 +18,7 @@ set (SKETCH sketch.c kvec.h kalloc.h mmpriv.h minimap.h bseq.h)
 set (MERGE merge.c merge.h)
 
 # platform dependent libraries
-IF (${DEPLOY_PLATFORM} STREQUAL "arm64-v8a")
-
-	set (KSW2_EXTD2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_extd2_neon.o")
-	set (KSW2_EXTS2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_exts2_neon.o")
-	set (KSW2_EXTZ2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_extz2_neon.o")
-	set (KSW2_LL_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_ll_sse.o")
-	set (ALIGN "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/align.o")
-
-	# Build a shared lib
-	add_library(minimapshared SHARED ${BSEQ} ${CHAIN} ${ESTERR} ${FORMAT} ${HIT} ${INDEX} ${KALLOC}
-			${KTHREAD} ${MAIN} ${MAP} ${MISC} ${OPTIONS} ${PE} ${SDUST} ${SKETCH} ${MERGE})
-
-ELSE()
+IF (${DEPLOY_PLATFORM} STREQUAL "x86")
 
 	set (KSW2_EXTD2_SSE ksw2_extd2_sse.c ksw2.h kalloc.h)
 	set (KSW2_EXTS2_SSE ksw2_exts2_sse.c ksw2.h kalloc.h)
@@ -45,6 +33,18 @@ ELSE()
 	# to create an executatble
 	#add_executable(minimapexe ${ALIGN} ${BSEQ} ${CHAIN} ${ESTERR} ${FORMAT} ${HIT} ${INDEX} ${KALLOC} ${KSW2_EXTD2_SSE} ${KSW2_EXTS2_SSE} ${KSW2_EXTZ2_SSE} ${KSW2_LL_SSE} ${KTHREAD} ${MAIN} ${MAP} ${MISC} ${OPTIONS} ${PE} ${SDUST} ${SKETCH} ${MERGE})
 	#target_link_libraries(minimapexe -lz -lpthread -ldl)
+
+ELSE()
+
+	set (KSW2_EXTD2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_extd2_neon.o")
+	set (KSW2_EXTS2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_exts2_neon.o")
+	set (KSW2_EXTZ2_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_extz2_neon.o")
+	set (KSW2_LL_SSE "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/ksw2_ll_sse.o")
+	set (ALIGN "${PROJECT_SOURCE_DIR}/3rdparty/${DEPLOY_PLATFORM}/align.o")
+
+	# Build a shared lib
+	add_library(minimapshared SHARED ${BSEQ} ${CHAIN} ${ESTERR} ${FORMAT} ${HIT} ${INDEX} ${KALLOC}
+			${KTHREAD} ${MAIN} ${MAP} ${MISC} ${OPTIONS} ${PE} ${SDUST} ${SKETCH} ${MERGE})
 
 ENDIF()
 
