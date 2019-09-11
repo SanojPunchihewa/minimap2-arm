@@ -99,9 +99,11 @@ static inline void yes_or_no(mm_mapopt_t *opt, int flag, int long_idx, const cha
 	}
 }
 
+char* OUTPUT_FILE_PATH;
+
 int init_minimap2(int argc, char *argv[])
 {
-	const char *opt_str = "2aSDw:k:K:t:r:f:Vv:g:G:I:d:XT:s:x:Hcp:M:n:z:A:B:O:E:m:N:Qu:R:hF:LC:yY";
+	const char *opt_str = "2aSDw:k:K:t:r:f:Vv:g:G:I:d:XT:s:x:Hcp:M:n:z:A:B:O:E:m:N:Qu:R:hF:LC:o:yY";
 	mm_mapopt_t opt;
 	mm_idxopt_t ipt;
 	int i, c, n_threads = 3, long_idx;
@@ -128,6 +130,9 @@ int init_minimap2(int argc, char *argv[])
 
 	while ((c = getopt_long(argc, argv, opt_str, long_options, &long_idx)) >= 0) {
 		if (c == 'w') ipt.w = atoi(optarg);
+		else if (c == 'o') {
+		    OUTPUT_FILE_PATH = optarg;
+		}
 		else if (c == 'k') ipt.k = atoi(optarg);
 		else if (c == 'H') ipt.flag |= MM_I_HPC;
 		else if (c == 'd') fnw = optarg; // the above are indexing related options, except -I

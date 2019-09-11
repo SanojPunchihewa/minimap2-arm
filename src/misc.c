@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "mmpriv.h"
+#include "logger.h"
 
 int mm_verbose = 1;
 int mm_dbg_flag = 0;
@@ -121,14 +122,28 @@ double realtime(void)
 	return tp.tv_sec + tp.tv_usec * 1e-6;
 }
 
+extern char* OUTPUT_FILE_PATH;
+//for android implementation we changed the original mm_err_puts()
 void mm_err_puts(const char *str)
 {
-	int ret;
-	ret = puts(str);
-	if (ret == EOF) {
-		fprintf(stderr, "[ERROR] failed to write the results\n");
-		exit(EXIT_FAILURE);
-	}
+#ifdef __ANDROID__
+    FILE *fptr;
+    fptr = fopen(OUTPUT_FILE_PATH, "a");
+    if(fptr == NULL) {
+       ERROR("Could not open output file path %s", OUTPUT_FILE_PATH);
+       exit(1);
+    }
+    // INFO("Output writing to file path : %s", ALIGNMENT_OUT);
+    PRINTTOSTREAM(fptr, "%s", str);
+    fclose(fptr);
+#else
+    int ret;
+    ret = puts(str);
+    if (ret == EOF) {
+        perror("[ERROR] failed to write the results");
+        exit(EXIT_FAILURE);
+    }
+#endif
 }
 
 #include "ksort.h"
