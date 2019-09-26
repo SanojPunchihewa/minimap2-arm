@@ -377,5 +377,10 @@ int init_minimap2(int argc, char *argv[])
             INFO(" %s", argv[i]);
         INFO("[M::%s] Real time: %.3f sec; CPU: %.3f sec\n", __func__, realtime() - mm_realtime0, cputime());
 	}
+    // A program that scans multiple argument vectors, or rescans the same vector more than once,
+    // and wants to make use of GNU extensions such as '+' and '-' at the start of optstring,
+    // or changes the value of POSIXLY_CORRECT between scans, must reinitialize getopt_long() by resetting optind to 1
+    // Doc https://linux.die.net/man/3/optind
+    optind = 1;
 	return 0;
 }
