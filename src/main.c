@@ -375,7 +375,8 @@ int init_minimap2(int argc, char *argv[])
         INFO("[M::%s] CMD:", __func__);
 		for (i = 0; i < argc; ++i)
             INFO(" %s", argv[i]);
-        INFO("[M::%s] Real time: %.3f sec; CPU: %.3f sec\n", __func__, realtime() - mm_realtime0, cputime());
+        INFO("[M::%s] Real time: %.3f sec; CPU: %.3f sec; Peak RAM: %.3f GB\n",
+                __func__, realtime() - mm_realtime0, cputime(), peakrss() / 1024.0 / 1024.0 / 1024.0);
 	}
     // A program that scans multiple argument vectors, or rescans the same vector more than once,
     // and wants to make use of GNU extensions such as '+' and '-' at the start of optstring,
