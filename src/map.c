@@ -534,7 +534,7 @@ static void *worker_pipeline(void *shared, int step, void *in)
 		free(s->replen);
 		km_destroy(km);
 		if (mm_verbose >= 3)
-			fprintf(stderr, "[M::%s::%.3f*%.2f] mapped %d sequences\n", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0), s->n_seq);
+			INFO("[M::%s::%.3f*%.2f] mapped %d sequences", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0), s->n_seq);
 		free(s);
 	}
     return 0;

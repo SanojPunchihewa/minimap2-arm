@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "mmpriv.h"
+#include "logger.h"
 
 void mm_idxopt_init(mm_idxopt_t *opt)
 {
@@ -56,7 +57,7 @@ void mm_mapopt_update(mm_mapopt_t *opt, const mm_idx_t *mi)
 	if (opt->mid_occ < opt->min_mid_occ)
 		opt->mid_occ = opt->min_mid_occ;
 	if (mm_verbose >= 3)
-		fprintf(stderr, "[M::%s::%.3f*%.2f] mid_occ = %d\n", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0), opt->mid_occ);
+		INFO("[M::%s::%.3f*%.2f] mid_occ = %d", __func__, realtime() - mm_realtime0, cputime() / (realtime() - mm_realtime0), opt->mid_occ);
 }
 
 void mm_mapopt_max_intron_len(mm_mapopt_t *opt, int max_intron_len)
