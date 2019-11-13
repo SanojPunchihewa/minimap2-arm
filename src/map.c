@@ -9,6 +9,7 @@
 #include "bseq.h"
 #include "khash.h"
 #include "merge.h"
+#include "logger.h"
 
 struct mm_tbuf_s {
 	void *km;

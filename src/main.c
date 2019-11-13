@@ -99,6 +99,7 @@ static inline void yes_or_no(mm_mapopt_t *opt, int flag, int long_idx, const cha
 	}
 }
 
+FILE* OUTPUT_FILE_POINTER;
 char* OUTPUT_FILE_PATH;
 
 int init_minimap2(int argc, char *argv[])
@@ -132,6 +133,11 @@ int init_minimap2(int argc, char *argv[])
 		if (c == 'w') ipt.w = atoi(optarg);
 		else if (c == 'o') {
 		    OUTPUT_FILE_PATH = optarg;
+            OUTPUT_FILE_POINTER = fopen(OUTPUT_FILE_PATH, "w");
+            if(OUTPUT_FILE_POINTER == NULL) {
+                ERROR("Could not open output file path %s", OUTPUT_FILE_PATH);
+                exit(1);
+            }
 		}
 		else if (c == 'k') ipt.k = atoi(optarg);
 		else if (c == 'H') ipt.flag |= MM_I_HPC;
@@ -369,6 +375,8 @@ int init_minimap2(int argc, char *argv[])
         ERROR("%s", "failed to write the results");
 		exit(EXIT_FAILURE);
 	}
+
+    fclose(OUTPUT_FILE_POINTER);
 
 	if (mm_verbose >= 3) {
         INFO("[M::%s] Version: %s\n", __func__, MM_VERSION);
